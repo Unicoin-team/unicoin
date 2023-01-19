@@ -2,26 +2,28 @@ package africa.semicolon.unicoin.registration;
 
 import africa.semicolon.unicoin.email.EmailSender;
 import africa.semicolon.unicoin.exception.RegistrationException;
+import africa.semicolon.unicoin.registration.dtos.ConfirmTokenRequest;
+import africa.semicolon.unicoin.registration.dtos.RegistrationRequest;
 import africa.semicolon.unicoin.registration.token.ConfirmationToken;
-import africa.semicolon.unicoin.registration.token.ConfirmationTokenRepository;
 import africa.semicolon.unicoin.registration.token.ConfirmationTokenService;
 import africa.semicolon.unicoin.user.User;
 import africa.semicolon.unicoin.user.UserRepository;
 import africa.semicolon.unicoin.user.UserRole;
 import africa.semicolon.unicoin.user.UserService;
 import jakarta.mail.MessagingException;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 
 @Service
+@AllArgsConstructor
 public class RegistrationService {
     @Autowired
     private UserService userService;
     @Autowired
     private EmailSender emailSender;
-
     @Autowired
     private ConfirmationTokenService confirmationTokenService;
     @Autowired
@@ -40,8 +42,8 @@ public class RegistrationService {
         return token;
     }
 
-    public String confirmToken(String confirmationToken){
-        ConfirmationToken confirmedToken = confirmationTokenService.getConfirmationToken(confirmationToken).orElseThrow(() -> new RegistrationException("Invalid token | Token doesn't exist"));
+    public String confirmToken(ConfirmTokenRequest confirmTokenRequest){
+        ConfirmationToken confirmedToken = confirmationTokenService.getConfirmationToken(confirmTokenRequest.getToken()).orElseThrow(() -> new RegistrationException("Invalid token | Token doesn't exist"));
 
 
         if(confirmedToken.getExpiredAt().isBefore(LocalDateTime.now())){
@@ -53,6 +55,8 @@ public class RegistrationService {
         }
 
         confirmationTokenService.setConfirmedAt(confirmedToken.getToken());
+
+        userService.enableUser(confirmTokenRequest.getEmail());
         return "confirmed";
     }
 
@@ -124,5 +128,7 @@ public class RegistrationService {
                 "\n" +
                 "</div></div>";
     }
+
+
 
 }

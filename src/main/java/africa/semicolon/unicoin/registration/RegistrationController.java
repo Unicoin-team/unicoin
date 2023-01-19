@@ -1,6 +1,7 @@
 package africa.semicolon.unicoin.registration;
 
 import africa.semicolon.unicoin.Utils.ApiResponse;
+import africa.semicolon.unicoin.registration.dtos.RegistrationRequest;
 import jakarta.mail.MessagingException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +19,7 @@ import java.time.ZonedDateTime;
 public class RegistrationController {
     @Autowired
     private RegistrationService registrationService;
-    @PostMapping
+    @PostMapping("/register")
     public ResponseEntity<?> registration(@RequestBody RegistrationRequest registrationRequest, HttpServletRequest httpServletRequest) throws MessagingException {
 
         String createdUser = registrationService.register(registrationRequest);
@@ -31,4 +32,7 @@ public class RegistrationController {
                 .build();
         return new ResponseEntity<>(apiResponse, HttpStatus.OK);
     }
+
+//    @PostMapping("/confirm")
+//    public ResponseEntity<?> confirmToken();
 }
