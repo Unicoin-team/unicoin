@@ -3,6 +3,7 @@ package africa.semicolon.unicoin.Utils;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import org.springframework.http.HttpStatus;
 
 import java.time.ZonedDateTime;
 @Data
@@ -10,7 +11,7 @@ import java.time.ZonedDateTime;
 @AllArgsConstructor
 public class ApiResponse {
     private ZonedDateTime timeStamp;
-    private int statusCode;
+    private HttpStatus statusCode;
     private String path;
     private Object data;
     private Boolean isSuccessful;

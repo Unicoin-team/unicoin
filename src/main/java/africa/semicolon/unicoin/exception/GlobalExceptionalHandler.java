@@ -23,7 +23,7 @@ public class GlobalExceptionalHandler {
                 .timeStamp(ZonedDateTime.now())
                 .data(registrationException.getMessage())
                 .path(httpServletRequest.getRequestURI())
-                .statusCode(HttpStatus.CONFLICT.value())
+                .statusCode(HttpStatus.CONFLICT)
                 .isSuccessful(false)
                 .build();
         return new ResponseEntity<>(apiResponse, HttpStatus.CONFLICT);
@@ -35,7 +35,7 @@ public class GlobalExceptionalHandler {
                 .timeStamp(ZonedDateTime.now())
                 .data(registrationException.getMessage())
                 .path(httpServletRequest.getRequestURI())
-                .statusCode(HttpStatus.BAD_REQUEST.value())
+                .statusCode(HttpStatus.BAD_REQUEST)
                 .isSuccessful(false)
                 .build();
 

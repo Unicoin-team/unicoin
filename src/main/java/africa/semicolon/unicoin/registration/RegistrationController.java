@@ -1,16 +1,14 @@
 package africa.semicolon.unicoin.registration;
 
 import africa.semicolon.unicoin.Utils.ApiResponse;
+import africa.semicolon.unicoin.registration.dtos.ConfirmTokenRequest;
 import africa.semicolon.unicoin.registration.dtos.RegistrationRequest;
 import jakarta.mail.MessagingException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.time.ZonedDateTime;
 
@@ -24,7 +22,7 @@ public class RegistrationController {
 
         String createdUser = registrationService.register(registrationRequest);
         ApiResponse apiResponse = ApiResponse.builder()
-                .statusCode(HttpStatus.OK.value())
+                .statusCode(HttpStatus.OK)
                 .data(createdUser)
                 .timeStamp(ZonedDateTime.now())
                 .path(httpServletRequest.getRequestURI())
@@ -33,6 +31,18 @@ public class RegistrationController {
         return new ResponseEntity<>(apiResponse, HttpStatus.OK);
     }
 
-//    @PostMapping("/confirm")
-//    public ResponseEntity<?> confirmToken();
+    @PostMapping("/confirm")
+    public ResponseEntity<?> confirmToken(@RequestBody ConfirmTokenRequest token, HttpServletRequest httpServletRequest){
+        String confirmToken = registrationService.confirmToken(token);
+        ApiResponse apiResponse = ApiResponse.builder()
+                .statusCode(HttpStatus.OK)
+                .data(confirmToken)
+                .timeStamp(ZonedDateTime.now())
+                .path(httpServletRequest.getRequestURI())
+                .isSuccessful(true)
+                .build();
+
+        return new ResponseEntity<>(apiResponse, HttpStatus.OK);
+    }
+
 }
