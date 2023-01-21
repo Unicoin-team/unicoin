@@ -3,6 +3,7 @@ package africa.semicolon.unicoin.registration;
 import africa.semicolon.unicoin.Utils.ApiResponse;
 import africa.semicolon.unicoin.registration.dtos.ConfirmTokenRequest;
 import africa.semicolon.unicoin.registration.dtos.RegistrationRequest;
+import africa.semicolon.unicoin.registration.dtos.ResendTokenRequest;
 import jakarta.mail.MessagingException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +31,14 @@ public class RegistrationController {
                 .build();
         return new ResponseEntity<>(apiResponse, HttpStatus.OK);
     }
+
+    @PostMapping("/resend")
+    public ResponseEntity<?> resendToken(@RequestBody ResendTokenRequest tokenRequest, HttpServletRequest httpServletRequest) throws MessagingException {
+        var resendTokenResponse = registrationService.resendToken(tokenRequest.getEmail());
+
+        ApiResponse apiResponse = ApiResponse.builder()
+                .statusCode(HttpStatus.OK.value())
+                .data(resendTokenResponse)
 
     @PostMapping("/confirm")
     public ResponseEntity<?> confirmToken(@RequestBody ConfirmTokenRequest token, HttpServletRequest httpServletRequest){
