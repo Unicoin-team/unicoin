@@ -1,6 +1,7 @@
 package africa.semicolon.unicoin.registration;
 
 import africa.semicolon.unicoin.email.EmailSender;
+import africa.semicolon.unicoin.exception.GenericHandler;
 import africa.semicolon.unicoin.exception.RegistrationException;
 import africa.semicolon.unicoin.registration.dtos.ConfirmTokenRequest;
 import africa.semicolon.unicoin.registration.dtos.RegistrationRequest;
@@ -38,8 +39,20 @@ public class RegistrationService {
                 registrationRequest.getLastName(),
                 registrationRequest.getPassword(),
                 UserRole.USER));
-        emailSender.send(registrationRequest.getEmailAddress(), buildEmail(registrationRequest.getFirstName(), token));
+        emailSender(registrationRequest.getEmailAddress(), registrationRequest.getFirstName(), token);
         return token;
+    }
+
+    private void emailSender(String emailAddress, String firstName, String token) throws MessagingException {
+        emailSender.send(emailAddress, buildEmail(firstName, token));
+    }
+
+    public String resendToken(String email) throws MessagingException {
+        var foundUser =  userRepository.findByEmailAddressIgnoreCase(email)
+                .orElseThrow(()-> new GenericHandler(String.format("%s does not exist in Registration Service", email)));
+        var generatedToken =  userService.generateToken(email);
+        emailSender(foundUser.getEmailAddress(), foundUser.getFirstName(), generatedToken);
+        return "Token sent!!!";
     }
 
     public String confirmToken(ConfirmTokenRequest confirmTokenRequest){
@@ -128,7 +141,5 @@ public class RegistrationService {
                 "\n" +
                 "</div></div>";
     }
-
-
 
 }
