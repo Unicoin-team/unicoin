@@ -1,6 +1,7 @@
 package africa.semicolon.unicoin.user;
 
 import africa.semicolon.unicoin.exception.GenericHandler;
+import africa.semicolon.unicoin.exception.RegistrationException;
 import africa.semicolon.unicoin.registration.dtos.PasswordRequest;
 import africa.semicolon.unicoin.registration.token.ConfirmationToken;
 import africa.semicolon.unicoin.registration.token.ConfirmationTokenService;
@@ -62,7 +63,7 @@ public class UserServiceImpl  implements UserService{
         String token = UUID.randomUUID().toString();
         String tokenEncrypt = passwordEncoder.encode(token);
         User user = getUserByEmailAddress(email);
-        if(!user.getPassword().equals(passwordRequest.getPassword())) throw new GenericHandlerException("Invalid password");
+        if(!user.getPassword().equals(passwordRequest.getPassword())) throw new GenericHandler("Invalid password");
         String userEmail = user.getEmailAddress();
         String deletedEmail = "Deleted" +  userEmail + tokenEncrypt;
         user.setEmailAddress(deletedEmail);
