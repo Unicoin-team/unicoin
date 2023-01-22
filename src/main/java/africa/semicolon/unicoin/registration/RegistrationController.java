@@ -37,8 +37,15 @@ public class RegistrationController {
         var resendTokenResponse = registrationService.resendToken(tokenRequest.getEmail());
 
         ApiResponse apiResponse = ApiResponse.builder()
-                .statusCode(HttpStatus.OK.value())
+                .statusCode(HttpStatus.OK)
                 .data(resendTokenResponse)
+                .timeStamp(ZonedDateTime.now())
+                .path(httpServletRequest.getRequestURI())
+                .isSuccessful(true)
+                .build();
+
+        return new ResponseEntity<>(apiResponse, HttpStatus.OK);
+    }
 
     @PostMapping("/confirm")
     public ResponseEntity<?> confirmToken(@RequestBody ConfirmTokenRequest token, HttpServletRequest httpServletRequest){
