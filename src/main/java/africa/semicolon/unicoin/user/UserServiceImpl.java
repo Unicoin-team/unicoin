@@ -7,11 +7,14 @@ import africa.semicolon.unicoin.registration.dtos.ForgotPasswordRequest;
 import africa.semicolon.unicoin.registration.dtos.ResetPasswordRequest;
 import africa.semicolon.unicoin.registration.resetToken.ResetPasswordToken;
 import africa.semicolon.unicoin.registration.resetToken.ResetPasswordTokenService;
+import africa.semicolon.unicoin.exception.RegistrationException;
+import africa.semicolon.unicoin.registration.dtos.PasswordRequest;
 import africa.semicolon.unicoin.registration.token.ConfirmationToken;
 import africa.semicolon.unicoin.registration.token.ConfirmationTokenService;
 import jakarta.mail.MessagingException;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -29,8 +32,9 @@ public class UserServiceImpl  implements UserService{
     private ResetPasswordTokenService resetPasswordTokenService;
 
     @Autowired
-    private EmailSender emailSender;
-
+    private EmailSender emailSender
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @Override
     public String createAccount(User user) {
@@ -54,6 +58,14 @@ public class UserServiceImpl  implements UserService{
     public void enableUser(String email) {
         userRepository.enable(email);
     }
+    @Override
+    public String resetPassword(ResetPasswordRequest resetPasswordRequest){
+        User user = getUserByEmailAddress(resetPasswordRequest.getEmail());
+        if(resetPasswordRequest.getPassword().equals(user.getPassword())) throw new GenericHandler("password mismatch");
+        user.setPassword(resetPasswordRequest.getPassword());
+        userRepository.save(user);
+        return "Password reset successful";
+    }
 
     @Override
     public String generateToken(String email) {
@@ -61,6 +73,7 @@ public class UserServiceImpl  implements UserService{
                 .orElseThrow(()-> new GenericHandler(String.format("%s does not exist in User Service!!", email)));
         return generateToken(foundUser);
     }
+
 
     @Override
     public String forgotPassword(ForgotPasswordRequest forgotPasswordRequest) throws MessagingException {
@@ -100,5 +113,22 @@ public class UserServiceImpl  implements UserService{
         return "Your password has been changed successfully";
     }
 
+    @Override
+    public User getUserByEmailAddress(String email) {
+        return userRepository.findByEmailAddressIgnoreCase(email).orElseThrow(() -> new RegistrationException("User with " + email + " does not exist"));
+    }
+
+    @Override
+    public String deleteAccountByEmail(String email, PasswordRequest passwordRequest) {
+        String token = UUID.randomUUID().toString();
+        String tokenEncrypt = passwordEncoder.encode(token);
+        User user = getUserByEmailAddress(email);
+        if(!user.getPassword().equals(passwordRequest.getPassword())) throw new GenericHandler("Invalid password");
+        String userEmail = user.getEmailAddress();
+        String deletedEmail = "Deleted" +  userEmail + tokenEncrypt;
+        user.setEmailAddress(deletedEmail);
+        userRepository.save(user);
+        return "Account delete successfully";
+    }
 
 }
