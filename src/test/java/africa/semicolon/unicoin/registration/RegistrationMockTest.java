@@ -53,7 +53,7 @@ public class RegistrationMockTest {
         //        assertEquals("Token sent!!!", registrationService.resendToken("12374@gmail.com"));
         ResendTokenRequest tokenRequest = new ResendTokenRequest();
         tokenRequest.setEmailAddress("test@testing.com");
-        assertEquals("Token sent!!!", registrationService.resendToken(tokenRequest));
+        assertEquals("Resend Successful", registrationService.resendToken(tokenRequest));
 
     }
 
