@@ -14,9 +14,9 @@ public class MockUtils {
 
     public static final EmailSender emailSenderMock = mock(EmailSender.class);
 
-    public static UserService userService(){
-        return new UserServiceImpl(userRepositoryMock, confirmationTokenServiceMock());
-    }
+//    public static UserService userService(){
+//        return new UserServiceImpl(userRepositoryMock, confirmationTokenServiceMock());
+//    }
 
     public static ConfirmationTokenService confirmationTokenServiceMock() {
         return new ConfirmationTokenService();

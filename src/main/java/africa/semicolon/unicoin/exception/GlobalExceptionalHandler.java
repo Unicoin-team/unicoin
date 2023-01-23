@@ -1,6 +1,6 @@
 package africa.semicolon.unicoin.exception;
 
-import africa.semicolon.unicoin.Utils.ApiResponse;
+
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,7 +23,7 @@ public class GlobalExceptionalHandler {
                 .timeStamp(ZonedDateTime.now())
                 .data(registrationException.getMessage())
                 .path(httpServletRequest.getRequestURI())
-                .statusCode(HttpStatus.CONFLICT)
+                .statusCode(HttpStatus.CONFLICT.value())
                 .isSuccessful(false)
                 .build();
         return new ResponseEntity<>(apiResponse, HttpStatus.CONFLICT);
@@ -35,7 +35,7 @@ public class GlobalExceptionalHandler {
                 .timeStamp(ZonedDateTime.now())
                 .data(registrationException.getMessage())
                 .path(httpServletRequest.getRequestURI())
-                .statusCode(HttpStatus.BAD_REQUEST)
+                .statusCode(HttpStatus.BAD_REQUEST.value())
                 .isSuccessful(false)
                 .build();
 
