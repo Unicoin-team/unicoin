@@ -2,6 +2,7 @@ package africa.semicolon.unicoin.registration;
 
 import africa.semicolon.unicoin.Utils.ApiResponse;
 import africa.semicolon.unicoin.registration.dtos.ConfirmTokenRequest;
+import africa.semicolon.unicoin.registration.dtos.PasswordRequest;
 import africa.semicolon.unicoin.registration.dtos.RegistrationRequest;
 import africa.semicolon.unicoin.registration.dtos.ResendTokenRequest;
 import jakarta.mail.MessagingException;
@@ -18,7 +19,7 @@ import java.time.ZonedDateTime;
 public class RegistrationController {
     @Autowired
     private RegistrationService registrationService;
-    @PostMapping("/register")
+    @PostMapping("register")
     public ResponseEntity<?> registration(@RequestBody RegistrationRequest registrationRequest, HttpServletRequest httpServletRequest) throws MessagingException {
 
         String createdUser = registrationService.register(registrationRequest);
@@ -32,15 +33,22 @@ public class RegistrationController {
         return new ResponseEntity<>(apiResponse, HttpStatus.OK);
     }
 
-    @PostMapping("/resend")
+    @PostMapping("resend")
     public ResponseEntity<?> resendToken(@RequestBody ResendTokenRequest tokenRequest, HttpServletRequest httpServletRequest) throws MessagingException {
         var resendTokenResponse = registrationService.resendToken(tokenRequest.getEmail());
 
         ApiResponse apiResponse = ApiResponse.builder()
-                .statusCode(HttpStatus.OK.value())
+                .statusCode(HttpStatus.OK)
                 .data(resendTokenResponse)
+                .timeStamp(ZonedDateTime.now())
+                .path(httpServletRequest.getRequestURI())
+                .isSuccessful(true)
+                .build();
 
-    @PostMapping("/confirm")
+        return new ResponseEntity<>(apiResponse, HttpStatus.OK);
+    }
+
+    @PostMapping("confirm")
     public ResponseEntity<?> confirmToken(@RequestBody ConfirmTokenRequest token, HttpServletRequest httpServletRequest){
         String confirmToken = registrationService.confirmToken(token);
         ApiResponse apiResponse = ApiResponse.builder()
