@@ -54,6 +54,7 @@ public class RegistrationMockTest {
         ResendTokenRequest tokenRequest = new ResendTokenRequest();
         tokenRequest.setEmailAddress("test@testing.com");
         assertEquals("Token sent!!!", registrationService.resendToken(tokenRequest));
+
     }
 
     @Test void testConfirmToken(){
