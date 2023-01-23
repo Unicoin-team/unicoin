@@ -34,8 +34,7 @@ public class RegistrationController {
 
     @PostMapping("resend")
     public ResponseEntity<?> resendToken(@RequestBody ResendTokenRequest tokenRequest, HttpServletRequest httpServletRequest) throws MessagingException {
-        var resendTokenResponse = registrationService.resendToken(tokenRequest.getEmail());
-
+        String resendTokenResponse = registrationService.resendToken(tokenRequest);
         ApiResponse apiResponse = ApiResponse.builder()
                 .statusCode(HttpStatus.OK)
                 .data(resendTokenResponse)

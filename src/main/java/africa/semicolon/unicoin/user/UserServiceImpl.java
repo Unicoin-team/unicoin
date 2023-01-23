@@ -98,11 +98,6 @@ public class UserServiceImpl  implements UserService{
         userRepository.save(user);
         return "Your password has been changed successfully";
     }
-
-    @Override
-    public User getUserByEmailAddress(String email) {
-        return userRepository.findByEmailAddressIgnoreCase(email).orElseThrow(() -> new RegistrationException("User with " + email + " does not exist"));
-    }
     @Override
     public String login(LoginRequest loginRequest) {
         User user = getUserByEmailAddress(loginRequest.getEmail());
@@ -110,7 +105,10 @@ public class UserServiceImpl  implements UserService{
         if(!user.getPassword().equals(loginRequest.getPassword())) throw new GenericHandler("Incorrect password");
         return "Login successful";
     }
-
+    @Override
+    public User getUserByEmailAddress(String email){
+        return userRepository.findByEmailAddressIgnoreCase(email).orElseThrow(() -> new RegistrationException(String.format("%s does not exist in regististration service", email)));
+    }
     @Override
     public String deleteAccountByEmail(String email, PasswordRequest passwordRequest) {
         String token = UUID.randomUUID().toString();
