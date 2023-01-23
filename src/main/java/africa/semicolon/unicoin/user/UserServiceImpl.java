@@ -80,7 +80,7 @@ public class UserServiceImpl  implements UserService{
     public String confirmResetPasswordToken(ConfirmTokenRequest confirmTokenRequest) {
         ResetPasswordToken resetPasswordToken =
                 resetPasswordTokenService.getResetPasswordToken(confirmTokenRequest.getToken())
-                        .orElseThrow(() -> new RuntimeException("Invalid token | Token doesn't exist"));
+                        .orElseThrow(() -> new RuntimeException("Token doesn't exist"));
 
         if(resetPasswordToken.getExpiredAt().isBefore(LocalDateTime.now()))
             throw new RuntimeException("Token has expired");
