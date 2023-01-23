@@ -3,6 +3,7 @@ package africa.semicolon.unicoin.user;
 import africa.semicolon.unicoin.exception.GenericHandler;
 import africa.semicolon.unicoin.exception.RegistrationException;
 import africa.semicolon.unicoin.registration.dtos.PasswordRequest;
+import africa.semicolon.unicoin.registration.dtos.ResetPasswordRequest;
 import africa.semicolon.unicoin.registration.token.ConfirmationToken;
 import africa.semicolon.unicoin.registration.token.ConfirmationTokenService;
 import lombok.AllArgsConstructor;
@@ -45,6 +46,14 @@ public class UserServiceImpl  implements UserService{
     @Override
     public void enableUser(String email) {
         userRepository.enable(email);
+    }
+    @Override
+    public String resetPassword(ResetPasswordRequest resetPasswordRequest){
+        User user = getUserByEmailAddress(resetPasswordRequest.getEmail());
+        if(resetPasswordRequest.getPassword().equals(user.getPassword())) throw new GenericHandler("password mismatch");
+        user.setPassword(resetPasswordRequest.getPassword());
+        userRepository.save(user);
+        return "Password reset successful";
     }
 
     @Override
