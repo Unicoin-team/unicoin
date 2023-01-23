@@ -3,8 +3,6 @@ package africa.semicolon.unicoin.registration.dtos;
 import lombok.Data;
 
 @Data
-public class ResetPasswordRequest {
+public class ForgotPasswordRequest {
     private String email;
-    private String newPassword;
-
 }

@@ -24,7 +24,7 @@ public class RegistrationController {
 
         String createdUser = registrationService.register(registrationRequest);
         ApiResponse apiResponse = ApiResponse.builder()
-                .statusCode(HttpStatus.OK)
+                .statusCode(HttpStatus.OK.value())
                 .data(createdUser)
                 .timeStamp(ZonedDateTime.now())
                 .path(httpServletRequest.getRequestURI())
@@ -62,4 +62,18 @@ public class RegistrationController {
         return new ResponseEntity<>(apiResponse, HttpStatus.OK);
     }
 
-}
+        @PostMapping("/confirm")
+        public ResponseEntity<?> confirmToken (@RequestBody ConfirmTokenRequest token, HttpServletRequest
+        httpServletRequest){
+            String confirmToken = registrationService.confirmToken(token);
+            ApiResponse apiResponse = ApiResponse.builder()
+                    .statusCode(HttpStatus.OK.value())
+                    .data(confirmToken)
+                    .timeStamp(ZonedDateTime.now())
+                    .path(httpServletRequest.getRequestURI())
+                    .isSuccessful(true)
+                    .build();
+
+            return new ResponseEntity<>(apiResponse, HttpStatus.OK);
+        }
+    }
