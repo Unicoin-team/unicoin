@@ -53,6 +53,7 @@ public class UserServiceImpl  implements UserService{
     public void enableUser(String email) {
         userRepository.enable(email);
     }
+
     @Override
     public String generateToken(String email) {
         var foundUser = userRepository.findByEmailAddressIgnoreCase(email)
@@ -76,9 +77,9 @@ public class UserServiceImpl  implements UserService{
     }
 
     public String confirmResetPasswordToken(ConfirmTokenRequest confirmTokenRequest) {
-        ResetPasswordToken resetPasswordToken =
-                resetPasswordTokenService.getResetPasswordToken(confirmTokenRequest.getToken())
-                        .orElseThrow(() -> new RuntimeException("Token doesn't exist"));
+        ResetPasswordToken resetPasswordToken = resetPasswordTokenService
+                .getResetPasswordToken(confirmTokenRequest.getToken())
+                .orElseThrow(() -> new RuntimeException("Token doesn't exist"));
 
         if(resetPasswordToken.getExpiredAt().isBefore(LocalDateTime.now()))
             throw new RuntimeException("Token has expired");
@@ -86,7 +87,6 @@ public class UserServiceImpl  implements UserService{
         if(resetPasswordToken.getConfirmedAt() != null)
             throw new RuntimeException("Token has been used");
 
-//        resetPasswordTokenService.setConfirmedAt(confirmTokenRequest.getToken());
         return "Confirmed";
     }
 

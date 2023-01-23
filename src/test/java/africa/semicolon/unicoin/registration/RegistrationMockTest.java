@@ -4,6 +4,7 @@ import africa.semicolon.unicoin.exception.RegistrationException;
 import africa.semicolon.unicoin.mockUtils.MockUtils;
 import africa.semicolon.unicoin.registration.dtos.ConfirmTokenRequest;
 import africa.semicolon.unicoin.registration.dtos.RegistrationRequest;
+import africa.semicolon.unicoin.registration.dtos.ResendTokenRequest;
 import africa.semicolon.unicoin.registration.token.ConfirmationToken;
 import africa.semicolon.unicoin.registration.token.ConfirmationTokenService;
 import africa.semicolon.unicoin.user.User;
@@ -35,26 +36,29 @@ public class RegistrationMockTest {
         RegistrationRequest registrationRequest = new RegistrationRequest(
                 "Jonathan",
                 "Martins",
-                "adulojujames",
-                "part1234"
+                "test@testing.com.ng",
+                "12345"
         );
          doReturn("94b199ea-614e-4a16-9f50-f94f5611bae9")
                  .when(userServiceMock).createAccount(any(User.class));
 
-         assertEquals(registrationService.register(registrationRequest), "94b199ea-614e-4a16-9f50-f94f5611bae9");
+         assertEquals("94b199ea-614e-4a16-9f50-f94f5611bae9", registrationService.register(registrationRequest));
     }
 
     @Test public void testResendToken() throws MessagingException {
         Optional<User> user = Optional.of(new User());
-        doReturn(user).when(userRepositoryMock).findByEmailAddressIgnoreCase("12374@gmail.com");
+        doReturn(user).when(userRepositoryMock).findByEmailAddressIgnoreCase("test@testing.com");
         doReturn("85656674-1488-4d64-aca6-e78ff6d757fc")
                 .when(userServiceMock).generateToken(any(String.class));
-//        assertEquals("Token sent!!!", registrationService.resendToken("12374@gmail.com"));
+        //        assertEquals("Token sent!!!", registrationService.resendToken("12374@gmail.com"));
+        ResendTokenRequest tokenRequest = new ResendTokenRequest();
+        tokenRequest.setEmailAddress("test@testing.com");
+        assertEquals("Token sent!!!", registrationService.resendToken(tokenRequest));
     }
 
     @Test void testConfirmToken(){
         ConfirmTokenRequest tokenRequest = new ConfirmTokenRequest();
-        tokenRequest.setEmail("lakes@gmail.com");
+        tokenRequest.setEmail("test@testing.com");
         tokenRequest.setToken("85656674-1488-4d64-aca6-e78ff6d757fc");
 
         Optional<ConfirmationToken> confirmationToken = Optional.of(new ConfirmationToken());
@@ -68,7 +72,7 @@ public class RegistrationMockTest {
 
     @Test void testConfirmTokenThrowsException(){
         ConfirmTokenRequest tokenRequest = new ConfirmTokenRequest();
-        tokenRequest.setEmail("lakes@gmail.com");
+        tokenRequest.setEmail("test@testing.com");
         tokenRequest.setToken("85656674-1488-4d64-aca6-e78ff6d757fc");
 
         Optional<ConfirmationToken> confirmationToken = Optional.of(new ConfirmationToken());

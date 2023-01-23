@@ -1,6 +1,8 @@
 package africa.semicolon.unicoin.mockUtils;
 
 import africa.semicolon.unicoin.email.EmailSender;
+import africa.semicolon.unicoin.registration.RegistrationService;
+import africa.semicolon.unicoin.registration.resetToken.ResetPasswordTokenRepository;
 import africa.semicolon.unicoin.registration.resetToken.ResetPasswordTokenService;
 import africa.semicolon.unicoin.registration.token.ConfirmationTokenRepository;
 import africa.semicolon.unicoin.registration.token.ConfirmationTokenService;
@@ -17,18 +19,31 @@ public class MockUtils {
     public static final PasswordEncoder passwordEncoderMock = mock(PasswordEncoder.class);
     public static final ResetPasswordTokenService resetPasswordServiceMock = mock(ResetPasswordTokenService.class);
     public static final ConfirmationTokenRepository tokenRepositoryMock = mock(ConfirmationTokenRepository.class);
+    public static final UserService userServiceMock = mock(UserService.class);
+    public static final ResetPasswordTokenRepository resetPasswordTokenRepositoryMock = mock(ResetPasswordTokenRepository.class);
 
-    public static UserService userService(){
+    public static UserService userService() {
         return new UserServiceImpl(userRepositoryMock,
                 confirmationTokenMock(),
                 resetPasswordServiceMock,
                 emailSenderMock,
                 passwordEncoderMock
-                );
+        );
     }
 
     public static ConfirmationTokenService confirmationTokenMock() {
         return new ConfirmationTokenService(tokenRepositoryMock);
     }
 
+    public static RegistrationService registrationServiceMock() {
+        return new RegistrationService(
+                userServiceMock,
+                emailSenderMock,
+                MockUtils.confirmationTokenMock(),
+                userRepositoryMock
+        );
+    }
+    public static ResetPasswordTokenService ResetPasswordServiceMock(){
+        return new ResetPasswordTokenService(resetPasswordTokenRepositoryMock);
+    }
 }
