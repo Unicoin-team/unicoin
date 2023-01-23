@@ -2,13 +2,10 @@ package africa.semicolon.unicoin.user;
 
 import africa.semicolon.unicoin.email.EmailSender;
 import africa.semicolon.unicoin.exception.GenericHandler;
-import africa.semicolon.unicoin.registration.dtos.ConfirmTokenRequest;
-import africa.semicolon.unicoin.registration.dtos.ForgotPasswordRequest;
-import africa.semicolon.unicoin.registration.dtos.ResetPasswordRequest;
+import africa.semicolon.unicoin.registration.dtos.*;
 import africa.semicolon.unicoin.registration.resetToken.ResetPasswordToken;
 import africa.semicolon.unicoin.registration.resetToken.ResetPasswordTokenService;
 import africa.semicolon.unicoin.exception.RegistrationException;
-import africa.semicolon.unicoin.registration.dtos.PasswordRequest;
 import africa.semicolon.unicoin.registration.token.ConfirmationToken;
 import africa.semicolon.unicoin.registration.token.ConfirmationTokenService;
 import jakarta.mail.MessagingException;
@@ -32,7 +29,7 @@ public class UserServiceImpl  implements UserService{
     private ResetPasswordTokenService resetPasswordTokenService;
 
     @Autowired
-    private EmailSender emailSender
+    private EmailSender emailSender;
     @Autowired
     private PasswordEncoder passwordEncoder;
 
@@ -58,15 +55,6 @@ public class UserServiceImpl  implements UserService{
     public void enableUser(String email) {
         userRepository.enable(email);
     }
-    @Override
-    public String resetPassword(ResetPasswordRequest resetPasswordRequest){
-        User user = getUserByEmailAddress(resetPasswordRequest.getEmail());
-        if(resetPasswordRequest.getPassword().equals(user.getPassword())) throw new GenericHandler("password mismatch");
-        user.setPassword(resetPasswordRequest.getPassword());
-        userRepository.save(user);
-        return "Password reset successful";
-    }
-
     @Override
     public String generateToken(String email) {
         var foundUser = userRepository.findByEmailAddressIgnoreCase(email)
@@ -116,6 +104,13 @@ public class UserServiceImpl  implements UserService{
     @Override
     public User getUserByEmailAddress(String email) {
         return userRepository.findByEmailAddressIgnoreCase(email).orElseThrow(() -> new RegistrationException("User with " + email + " does not exist"));
+    }
+    @Override
+    public String login(LoginRequest loginRequest) {
+        User user = getUserByEmailAddress(loginRequest.getEmail());
+        if(user.getIsDisabled()) throw new GenericHandler("User hasn't been verified");
+        if(!user.getPassword().equals(loginRequest.getPassword())) throw new GenericHandler("Incorrect password");
+        return "Login successful";
     }
 
     @Override
