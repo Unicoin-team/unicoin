@@ -5,6 +5,7 @@ import africa.semicolon.unicoin.exception.GenericHandler;
 import africa.semicolon.unicoin.exception.RegistrationException;
 import africa.semicolon.unicoin.registration.dtos.ConfirmTokenRequest;
 import africa.semicolon.unicoin.registration.dtos.RegistrationRequest;
+import africa.semicolon.unicoin.registration.dtos.ResendTokenRequest;
 import africa.semicolon.unicoin.registration.token.ConfirmationToken;
 import africa.semicolon.unicoin.registration.token.ConfirmationTokenService;
 import africa.semicolon.unicoin.user.User;
@@ -17,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Service
 @AllArgsConstructor
@@ -47,12 +49,11 @@ public class RegistrationService {
         emailSender.send(emailAddress, buildEmail(firstName, token));
     }
 
-    public String resendToken(String email) throws MessagingException {
-        var foundUser =  userRepository.findByEmailAddressIgnoreCase(email)
-                .orElseThrow(()-> new GenericHandler(String.format("%s does not exist in Registration Service", email)));
-        var generatedToken =  userService.generateToken(email);
-        emailSender(foundUser.getEmailAddress(), foundUser.getFirstName(), generatedToken);
-        return "Token sent!!!";
+    public String resendToken(ResendTokenRequest tokenResendRequest) throws MessagingException {
+        User user = userService.getUserByEmailAddress(tokenResendRequest.getEmailAddress());
+        String token = UUID.randomUUID().toString();
+        emailSender(user.getEmailAddress(), user.getFirstName(), token);
+        return "Resend Successful";
     }
 
     public String confirmToken(ConfirmTokenRequest confirmTokenRequest){
