@@ -2,7 +2,6 @@ package africa.semicolon.unicoin.registration;
 
 import africa.semicolon.unicoin.Utils.ApiResponse;
 import africa.semicolon.unicoin.registration.dtos.ConfirmTokenRequest;
-import africa.semicolon.unicoin.registration.dtos.PasswordRequest;
 import africa.semicolon.unicoin.registration.dtos.RegistrationRequest;
 import africa.semicolon.unicoin.registration.dtos.ResendTokenRequest;
 import jakarta.mail.MessagingException;

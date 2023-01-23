@@ -24,10 +24,8 @@ public class UserServiceImpl  implements UserService{
     private UserRepository userRepository;
     @Autowired
     private ConfirmationTokenService confirmationTokenService;
-
     @Autowired
     private ResetPasswordTokenService resetPasswordTokenService;
-
     @Autowired
     private EmailSender emailSender;
     @Autowired

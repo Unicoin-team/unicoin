@@ -56,8 +56,9 @@ public class RegistrationService {
     }
 
     public String confirmToken(ConfirmTokenRequest confirmTokenRequest){
-        ConfirmationToken confirmedToken = confirmationTokenService.getConfirmationToken(confirmTokenRequest.getToken()).orElseThrow(() -> new RegistrationException("Invalid token | Token doesn't exist"));
-
+        ConfirmationToken confirmedToken = confirmationTokenService
+                .getConfirmationToken(confirmTokenRequest.getToken())
+                .orElseThrow(() -> new RegistrationException("Invalid token | Token doesn't exist"));
 
         if(confirmedToken.getExpiredAt().isBefore(LocalDateTime.now())){
             throw new RegistrationException("Token has expired");
