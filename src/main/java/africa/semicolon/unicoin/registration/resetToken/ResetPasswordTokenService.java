@@ -1,5 +1,6 @@
 package africa.semicolon.unicoin.registration.resetToken;
 
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -7,6 +8,7 @@ import java.time.LocalDateTime;
 import java.util.Optional;
 
 @Service
+@AllArgsConstructor
 public class ResetPasswordTokenService {
 
     @Autowired
@@ -27,6 +29,5 @@ public class ResetPasswordTokenService {
     public void setConfirmedAt(ResetPasswordToken token){
         resetPasswordTokenRepository.setConfirmedAt(token);
     }
-
 
 }
